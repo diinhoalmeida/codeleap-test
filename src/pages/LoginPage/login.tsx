@@ -19,8 +19,8 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="h-screen w-screen p-0 m-0 flex items-center justify-center">
-      <div className="w-full sm:w-[500px] bg-white rounded-[16px] p-4 sm:p-8 flex flex-col justify-between border border-gray-300 border-opacity-75 gap-3">
+    <div className="h-screen w-screen p-8 m-0 flex items-center justify-center">
+      <div className="w-full sm:w-[500px] bg-white rounded-[16px] p-4 flex flex-col justify-between border border-gray-300 border-opacity-75 gap-3">
         <h1 className="text-black text-[20px] font-[700]">
           Welcome to CodeLeap network!
         </h1>
