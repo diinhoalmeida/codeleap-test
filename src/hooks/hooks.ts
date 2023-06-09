@@ -1,4 +1,5 @@
 import axios from "axios";
+import Post from "../interfaces/Posts";
 
 const BASE_URL = "https://dev.codeleap.co.uk/careers/";
 
@@ -29,9 +30,10 @@ export const createPost = async (data: {
   }
 };
 
-export const updatePost = async (objectId: number, data) => {
+export const updatePost = async (objectId: number, data: Post) => {
+  console.log("dados", objectId, data);
   try {
-    const response = await axios.patch(BASE_URL + objectId, data);
+    const response = await axios.patch(BASE_URL + objectId + "/", data);
     return response.data;
   } catch (error) {
     console.error("Error:", error);

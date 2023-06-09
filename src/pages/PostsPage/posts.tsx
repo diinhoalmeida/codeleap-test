@@ -2,24 +2,23 @@ import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { createPost, deletePost, getPosts } from "../../hooks/hooks";
 import formatTimeDifference from "../../utils/dateDifference";
 import { FaTrashAlt } from "react-icons/fa";
-
-interface Posts {
-  content: string;
-  created_datetime: Date;
-  id: number;
-  title: string;
-  username: string;
-}
+import ModalUpdate from "../../components/Posts/ModalUpdate/modalUpdate";
+import { useDisclosure } from "@chakra-ui/react";
+import { FaRegEdit } from "react-icons/fa";
+import Post from "../../interfaces/Posts";
 
 const PostsPage = () => {
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
+  const [titleModal, setTitleModal] = useState<string>("");
+  const [contentModal, setContentModal] = useState<string>("");
+  const [idPost, setIdPost] = useState<number>();
   const [titleError, setTitleError] = useState<string>("");
   const [contentError, setContentError] = useState<string>("");
   const [username, setUsername] = useState<string>("");
-  const [posts, setPosts] = useState<Posts[]>([]);
-  const [limit, setLimit] = useState<number>(10);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [offset, setOffset] = useState<number>(0);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
@@ -53,13 +52,12 @@ const PostsPage = () => {
   };
 
   const loadMore = () => {
-    setOffset((prevOffset) => prevOffset + limit);
+    setOffset((prevOffset) => prevOffset + 10);
   };
 
   const fetchData = async () => {
     try {
-      const postsData = await getPosts(limit, offset);
-      console.log(postsData.results);
+      const postsData = await getPosts(10, offset);
       if (offset !== 0) {
         setPosts((prevPosts) => [...prevPosts, ...postsData.results]);
       } else {
@@ -92,6 +90,17 @@ const PostsPage = () => {
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const setInfosToModal = (
+    idSelected: number,
+    titleSelected: string,
+    contentSelected: string
+  ) => {
+    setIdPost(idSelected);
+    setContentModal(contentSelected);
+    setTitleModal(titleSelected);
+    onOpen();
   };
 
   useEffect(() => {
@@ -149,7 +158,7 @@ const PostsPage = () => {
                   value={content}
                   id="content"
                   onChange={handleContentChange}
-                  placeholder="Coment here"
+                  placeholder="Content here"
                 />
                 {contentError && (
                   <p className="text-red-500 text-xs italic">{contentError}</p>
@@ -166,7 +175,7 @@ const PostsPage = () => {
             </form>
           </div>
           <div className="w-full p-3 border shadow-md rounded-[16px] bg-white flex flex-col gap-5">
-            {posts.map((item, index) => (
+            {posts.map((post, index) => (
               <div className="w-full rounded-[8px] bg-white shadow-md">
                 <div
                   key={index}
@@ -174,24 +183,34 @@ const PostsPage = () => {
                 >
                   <div className="w-full flex justify-between items-center">
                     <h1 className="text-[22px] font-[700] text-white">
-                      {item.title}
+                      {post.title}
                     </h1>
-                    {username === item.username && (
-                      <div
-                        onClick={() => removePost(item.id)}
-                        className="flex cursor-pointer"
-                      >
-                        <FaTrashAlt className="text-white w-[20px]" />
+                    {username === post.username && (
+                      <div className="flex cursor-pointer gap-5">
+                        <div
+                          onClick={() =>
+                            setInfosToModal(
+                              post.id as number,
+                              post.title,
+                              post.content
+                            )
+                          }
+                        >
+                          <FaRegEdit className="text-white w-[20px]" />
+                        </div>
+                        <div onClick={() => removePost(post.id as number)}>
+                          <FaTrashAlt className="text-white w-[20px]" />
+                        </div>
                       </div>
                     )}
                   </div>
                 </div>
                 <div className="w-full p-3 flex flex-col gap-3 ">
                   <div className="flex font-[700] row w-full justify-between text-[#777777] text-[18px]">
-                    <p>@{item.username}</p>
-                    <p>{formatTimeDifference(item.created_datetime)}</p>
+                    <p>@{post.username}</p>
+                    <p>{formatTimeDifference(post.created_datetime as Date)}</p>
                   </div>
-                  <p>{item.content}</p>
+                  <p>{post.content}</p>
                 </div>
               </div>
             ))}
@@ -206,6 +225,15 @@ const PostsPage = () => {
           </div>
         </div>
       </div>
+      <ModalUpdate
+        isOpen={isOpen}
+        id={idPost as number}
+        posts={posts}
+        setPosts={setPosts}
+        onClose={onClose}
+        title={titleModal}
+        content={contentModal}
+      />
     </div>
   );
 };
