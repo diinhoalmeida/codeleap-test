@@ -4,9 +4,7 @@ import {
   ModalCloseButton,
   ModalContent,
   ModalOverlay,
-  Text,
 } from "@chakra-ui/react";
-import { useState, useEffect } from "react";
 import { deletePost } from "../../../hooks/hooks";
 import Post from "../../../interfaces/Posts";
 
@@ -45,7 +43,7 @@ function ModalDelete({
     }
   };
 
-  const [overlay, setOverlay] = useState(<OverlayTwo />);
+  const overlay = <OverlayTwo />;
 
   return (
     <>

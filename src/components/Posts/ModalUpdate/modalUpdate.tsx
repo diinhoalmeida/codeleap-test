@@ -1,13 +1,10 @@
 import {
-  Button,
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Text,
 } from "@chakra-ui/react";
 import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { updatePost } from "../../../hooks/hooks";
@@ -46,7 +43,7 @@ function ModalUpdate({
     />
   );
 
-  const [overlay, setOverlay] = useState(<OverlayTwo />);
+  const overlay = <OverlayTwo />;
 
   const handleTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setTitleModal(event.target.value);
@@ -70,7 +67,6 @@ function ModalUpdate({
       setContentError("Please write a comment.");
       return;
     }
-    console.log("title", titleModal, "content", contentModal);
     if (titleModal.trim() !== "" && contentModal.trim() !== "") {
       await updatePost(id as number, {
         title: titleModal,

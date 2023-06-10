@@ -1,4 +1,10 @@
-import { useState, ChangeEvent, FormEvent, useEffect } from "react";
+import {
+  useState,
+  ChangeEvent,
+  FormEvent,
+  useEffect,
+  useCallback,
+} from "react";
 import { createPost, getPosts } from "../../hooks/hooks";
 import formatTimeDifference from "../../utils/dateDifference";
 import { FaTrashAlt } from "react-icons/fa";
@@ -61,7 +67,7 @@ const PostsPage = () => {
     setOffset((prevOffset) => prevOffset + 10);
   };
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const postsData = await getPosts(10, offset);
       if (offset !== 0) {
@@ -72,7 +78,7 @@ const PostsPage = () => {
     } catch (error) {
       console.error(error);
     }
-  };
+  }, [offset, setPosts]);
 
   const savePost = async (data: {
     username: string;
@@ -111,11 +117,7 @@ const PostsPage = () => {
       setUsername(storedUsername.slice(1, storedUsername.length));
     }
     fetchData();
-  }, []);
-
-  useEffect(() => {
-    fetchData();
-  }, [offset]);
+  }, [fetchData]);
 
   return (
     <div className="h-screen w-screen p-0 m-0 flex justify-center">
