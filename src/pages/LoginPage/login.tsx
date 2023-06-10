@@ -26,21 +26,26 @@ const LoginPage = () => {
         </h1>
         <div>
           <h2>Please enter your username</h2>
-          <input
-            type="text"
-            placeholder="John..."
-            className="w-full border border-gray-300 border-opacity-75 rounded-[9px] py-2 px-4"
-            value={username}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div className="w-full flex justify-end">
-          <button
-            className="bg-[#7695EC] rounded-[8px] py-1 px-6 font-[700] text-white hover:scale-110 transition-all duration-200"
-            onClick={handleEnter}
-          >
-            ENTER
-          </button>
+          <form onSubmit={handleEnter}>
+            <div className="flex flex-col gap-5">
+              <input
+                type="text"
+                placeholder="John..."
+                className="w-full border border-gray-300 border-opacity-75 rounded-[9px] py-2 px-4"
+                value={username}
+                onChange={handleInputChange}
+              />
+              <div className="w-full flex justify-end">
+                <button
+                  className="bg-[#7695EC] rounded-[8px] py-1 px-6 font-[700] text-white hover:scale-110 transition-all duration-200"
+                  onClick={handleEnter}
+                  type="submit"
+                >
+                  ENTER
+                </button>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>
