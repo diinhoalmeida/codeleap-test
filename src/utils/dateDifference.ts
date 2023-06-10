@@ -15,7 +15,7 @@ const formatTimeDifference = (date: Date): string => {
     const remainingMinutes = minutes % 60;
     return `${hours}h ${remainingMinutes}m`;
   } else {
-    return `${minutes}m`;
+    return `${minutes} minutes ago`;
   }
 };
 

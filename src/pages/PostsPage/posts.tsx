@@ -1,11 +1,12 @@
 import { useState, ChangeEvent, FormEvent, useEffect } from "react";
-import { createPost, deletePost, getPosts } from "../../hooks/hooks";
+import { createPost, getPosts } from "../../hooks/hooks";
 import formatTimeDifference from "../../utils/dateDifference";
 import { FaTrashAlt } from "react-icons/fa";
 import ModalUpdate from "../../components/Posts/ModalUpdate/modalUpdate";
-import { useDisclosure } from "@chakra-ui/react";
+import { Text, useDisclosure } from "@chakra-ui/react";
 import { FaRegEdit } from "react-icons/fa";
 import Post from "../../interfaces/Posts";
+import ModalDelete from "../../components/Posts/ModalDelete/modalDelete";
 
 const PostsPage = () => {
   const [title, setTitle] = useState<string>("");
@@ -19,6 +20,11 @@ const PostsPage = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [offset, setOffset] = useState<number>(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenModalDelete,
+    onOpen: onOpenModalDelete,
+    onClose: onCloseModalDelete,
+  } = useDisclosure();
 
   const handleTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
@@ -83,15 +89,6 @@ const PostsPage = () => {
     }
   };
 
-  const removePost = async (postId: number) => {
-    try {
-      await deletePost(postId);
-      setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const setInfosToModal = (
     idSelected: number,
     titleSelected: string,
@@ -101,6 +98,11 @@ const PostsPage = () => {
     setContentModal(contentSelected);
     setTitleModal(titleSelected);
     onOpen();
+  };
+
+  const setInfosToModalDelete = (idSelected: number) => {
+    setIdPost(idSelected);
+    onOpenModalDelete();
   };
 
   useEffect(() => {
@@ -182,9 +184,12 @@ const PostsPage = () => {
                   className="h-[70px] rounded-t-[8px] w-full bg-[#7695EC] px-5 items-center flex"
                 >
                   <div className="w-full flex justify-between items-center">
-                    <h1 className="text-[22px] font-[700] text-white">
+                    <Text
+                      isTruncated
+                      className="text-[22px] font-[700] text-white"
+                    >
                       {post.title}
-                    </h1>
+                    </Text>
                     {username === post.username && (
                       <div className="flex cursor-pointer gap-5">
                         <div
@@ -198,7 +203,11 @@ const PostsPage = () => {
                         >
                           <FaRegEdit className="text-white w-[20px]" />
                         </div>
-                        <div onClick={() => removePost(post.id as number)}>
+                        <div
+                          onClick={() =>
+                            setInfosToModalDelete(post.id as number)
+                          }
+                        >
                           <FaTrashAlt className="text-white w-[20px]" />
                         </div>
                       </div>
@@ -206,9 +215,11 @@ const PostsPage = () => {
                   </div>
                 </div>
                 <div className="w-full p-3 flex flex-col gap-3 ">
-                  <div className="flex font-[700] row w-full justify-between text-[#777777] text-[18px]">
-                    <p>@{post.username}</p>
-                    <p>{formatTimeDifference(post.created_datetime as Date)}</p>
+                  <div className="flex row w-full justify-between text-[#777777] text-[18px]">
+                    <Text className="font-[700] ">@{post.username}</Text>
+                    <p className="font-[400] text-[18px]">
+                      {formatTimeDifference(post.created_datetime as Date)}
+                    </p>
                   </div>
                   <p>{post.content}</p>
                 </div>
@@ -233,6 +244,13 @@ const PostsPage = () => {
         onClose={onClose}
         title={titleModal}
         content={contentModal}
+      />
+      <ModalDelete
+        isOpenModalDelete={isOpenModalDelete}
+        posts={posts}
+        setPosts={setPosts}
+        id={idPost as number}
+        onCloseModalDelete={onCloseModalDelete}
       />
     </div>
   );
