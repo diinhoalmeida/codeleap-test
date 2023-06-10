@@ -14,7 +14,7 @@ const LoginPage = () => {
   const handleEnter = () => {
     if (username !== "") {
       localStorage.setItem("username", `@${username}`);
-      navigate("/posts");
+      navigate("/posts?");
     }
   };
 
@@ -38,7 +38,6 @@ const LoginPage = () => {
               <div className="w-full flex justify-end">
                 <button
                   className="bg-[#7695EC] rounded-[8px] py-1 px-6 font-[700] text-white hover:scale-110 transition-all duration-200"
-                  onClick={handleEnter}
                   type="submit"
                 >
                   ENTER
